@@ -53,6 +53,9 @@ $scope.$broadcast('honey:bindValueToHash')
 
 after broadcast, all element that with ```honey-bind-hash``` will bind to hash.
 
+Of course, you can also broadcast a ```honey:bindHashToElement``` event,
+make this directive working.
+
 ## Demo
 
   the details see the directory ```sample```
@@ -60,7 +63,11 @@ after broadcast, all element that with ```honey-bind-hash``` will bind to hash.
 ## LINCENSE
   MIT
 
+# Future
+ 1. Provid a ```provider``` that can config the element's events，make it control
+the moment of binding
+
 ## History
 
-0.0.1
+00.0.1
   init plugin and test.

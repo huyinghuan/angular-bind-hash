@@ -1,0 +1,7 @@
+{
+  "name": "angular-bind-hash",
+  "version": "0.0.1",
+  "scripts":{
+    "test": "coffee --no-header -o ./ -c ./sample/module/"
+  }
+}

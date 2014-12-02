@@ -1,0 +1,25 @@
+{
+  "name": "angular-bind-hash",
+  "version": "0.0.1",
+  "authors": [
+    "huyinghuan <ec.huyinghuan@gmail.com>"
+  ],
+  "description": "Bind hash to element's value and Bind element's value to hash",
+  "main": "angular-bind-hash.js",
+  "keywords": [
+    "bind hash",
+    "angularjs"
+  ],
+  "license": "MIT",
+  "homepage": "github.com/huyinghuan/angular-bind-hash",
+  "ignore": [
+    "**/.*",
+    ".slow",
+    "sample",
+    ".idea"
+
+  ],
+  "dependencies": {
+    "angularjs": "v1.3.5"
+  }
+}

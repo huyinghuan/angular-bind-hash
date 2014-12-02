@@ -1,0 +1,133 @@
+angular.module('honey.hashBind', [])
+  .factory('honey.utils',['$location', ($location)->
+    serialize: (obj)->
+      queue = []
+      queue.push "#{key}=#{value}" for key, value of obj
+      queue.join '&'
+
+    unserialize: (hash)->
+      return {} if (not hash) or (hash is '')
+      hash = hash.replace /^#/, ''
+      obj = {}
+      try
+        queue = hash.split '&'
+        for query in queue
+          item = query.split('=')
+          obj[item[0]] =  item[1]
+      catch e
+      finally
+        return obj
+
+    indexOf: (arr, item)->
+      arr = arr or []
+      for value, index in arr
+        return index if value is item
+      return -1
+
+    setHash: (obj)->
+      params = @unserialize $location.hash()
+      params = angular.extend params, obj
+      $location.hash @serialize params
+
+    getHashObj: (filed)->
+      obj = @unserialize $location.hash()
+      return obj[filed] if filed
+      return obj
+
+    bindValueToHash: (key, value)->
+      params = @unserialize $location.hash()
+      params[key] = value
+      $location.hash @serialize params
+
+    bindHashToInput: (element, value)->
+      element.val(value)
+
+    bindHashToSelect: (element, value)->
+      options = element.find('option')
+      for option in options
+        if option.value is value
+          option.selected = 'selected'
+          break
+
+    bindHashToOption: (element, key)->
+      params = @unserialize $location.hash()
+      return if not params[key]
+      if element.val() is params[key]
+        element.attr('selected', 'selected')
+
+    bindHashToRadio: (element, value)->
+      if element.val() is value
+        element.attr('checked', true)
+
+    bindHashToCheckbox: (element, value)->
+      queue = []
+      queue = value.split(',') if value
+      for box in queue
+        if element.val() is box
+          element.attr('checked', true)
+          break
+
+    bindInputToHash: (key, value)->
+      @bindValueToHash key, value
+
+    bindSelectToHash: (key, value)->
+      @bindValueToHash key, value
+
+    bindRadioToHash: (key, value, status)->
+      @bindValueToHash key, value if status
+
+    bindCheckboxToHash: (key, value, status)->
+      params = @unserialize $location.hash()
+      oldValue = params[key] or ''
+      oldValue = if oldValue is '' then [] else oldValue.split(',')
+      if status
+        index = @indexOf oldValue, value
+        oldValue.push value if index is -1
+      else
+        for item, index in oldValue
+          if item is value
+            oldValue.splice index, 1
+            break
+      params[key] = oldValue.join(',')
+      $location.hash @serialize params
+
+  ])
+  .directive('honeyHashBind', ['honey.utils', (utils) ->
+      restrict: 'A'
+      replace: false
+      scope: {}
+      link: ($scope, element, attrs)->
+        eleType =  (element[0].type or element[0].tagName).toUpperCase()
+        attrName = element.attr('name')
+        bindHashToElement = ->
+          value = utils.getHashObj attrName
+          switch eleType
+            when 'TEXT' then utils.bindHashToInput element, value
+            when 'SELECT-ONE' then utils.bindHashToSelect element, value
+            when 'RADIO' then utils.bindHashToRadio element, value
+            when 'CHECKBOX' then utils.bindHashToCheckbox element, value
+            when 'OPTION'
+              $scope.$evalAsync ->
+                utils.bindHashToOption element, element.parent().attr('name')
+            else utils.bindHashToInput element, value
+
+        bindValueToHash = ()->
+          value = element.val()
+          switch eleType
+            when 'TEXT' then utils.bindInputToHash attrName, value
+            when 'SELECT-ONE' then utils.bindSelectToHash attrName, value
+            when 'RADIO' then utils.bindRadioToHash attrName, value, element[0].checked
+            when 'CHECKBOX' then utils.bindCheckboxToHash attrName, value, element[0].checked
+            when 'OPTION' then 0
+            else utils.bindInputToHash attrName, value
+
+        bindHashToElement()
+
+        $scope.$on('honey:bindHashToElement', (event, type)->
+          bindHashToElement()
+        )
+
+        $scope.$on('honey:bindValueToHash', ->
+          bindValueToHash()
+        )
+  ])

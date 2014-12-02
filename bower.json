@@ -17,7 +17,6 @@
     ".slow",
     "sample",
     ".idea"
-
   ],
   "dependencies": {
     "angularjs": "v1.3.5"

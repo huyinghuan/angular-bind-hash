@@ -1,0 +1,70 @@
+<html>
+<head>
+  <style>
+    #content{
+      width: 980px;
+      margin: 30px auto 0 auto;
+    }
+    #content > div{
+      margin-bottom: 30px;
+      border: solid #f3f3f3 1px;
+      padding: 10px 10px;
+    }
+
+    button{
+      margin: 10px 10px;
+      -moz-border-radius: 5px;
+      -webkit-border-radius: 5px;
+      padding: 5px 10px;
+    }
+
+
+  </style>
+</head>
+
+<body ng-controller="TestCtrl">
+<div id="content">
+  <h1>Example:</h1>
+  <div>
+    <label>username</label>
+    <input type="text" name="username" honey-hash-bind/>
+  </div>
+
+  <div>
+    <lable>email</lable>
+    <input type="text" name="email" honey-hash-bind/>
+  </div>
+
+  <div>
+    <label>Radio Button Group</label>
+    <input type="radio" name='sex' value="male" honey-hash-bind/>
+    <input type="radio" name = 'sex' value="man" honey-hash-bind/>
+  </div>
+  <div>
+    <label>Select:</label>
+    <select name="birth"  honey-hash-bind>
+      <option ng-repeat='item in list' value="{{item}}" honey-hash-bind>{{item}}</option>
+    </select>
+  </div>
+
+  <div>
+    <label>Checkbox group:</label>
+    <input type="checkbox" name="ball" value="ball-a" honey-hash-bind/> ball-a
+    <input type="checkbox" name="ball" value="ball-b" honey-hash-bind/> ball-b
+  </div>
+
+  <div>
+    <label>Single checkbox</label>
+    <input type="checkbox" name="dance" value="dance-a" honey-hash-bind/> dance-a
+  </div>
+
+  <div>
+    <button ng-click="bind()">Bind value to Element</button>
+    <button ng-click="refresh()">Refresh Page, hash bind to Elent</button>
+  </div>
+</div>
+  <script src="lib/angular.min.js"></script>
+  <script src="module/angular-bind-hash.js"></script>
+  <script src="index.js"></script>
+</body>
+</html>

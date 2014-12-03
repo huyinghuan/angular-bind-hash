@@ -3,6 +3,11 @@ Angular-bind-hash
   Bind hash to element's value when page loaded and bind element's value to hash.
   This plugin for URL copy in angular application.
 
+
+## Homepage
+
+https://huyinghuan.github.io/angular-bind-hash/
+
 ## How to install
 
 ### with bower.js

@@ -88,22 +88,75 @@ angular.module('honey.hashBind', [])
           if item is value
             oldValue.splice index, 1
             break
-      params[key] = oldValue.join(',')
-      $location.hash @serialize params
 
+      newValue = oldValue.join(',')
+      if newValue is '' then delete  params[key] else params[key] = newValue
+      $location.hash @serialize params
   ])
-  .directive('honeyHashBind', ['honey.utils', (utils) ->
+  .provider('hashBind', ->
+    eventsMap =
+      'TEXT': [
+        'keyup'
+        (e, cb)->
+          if e.keyCode is 13
+            e.preventDefault()
+            cb and cb()
+      ]
+      'SELECT': [
+        'change'
+        (e, cb)-> cb and cb()
+      ]
+      'RADIO': [
+        'click'
+        (e, cb)-> cb and cb()
+      ]
+      'CHECKBOX': [
+        'click'
+        (e, cb)-> cb and cb()
+      ]
+
+    isListener =
+      'TEXT': true
+      'SELECT': true
+      'RADIO': true
+      'CHECKBOX': true
+
+    class T
+      constructor: ->
+
+      getLisener: (eleType)->
+        eventsMap[eleType]
+
+      hasLisener: (eleType)->
+        isListener[eleType]
+
+    @setEventsMap = (map)->
+      for key, value of map
+        if typeof value is 'boolean'
+          isListener[key] = value
+        else
+          eventsMap[key] = value
+
+    @$get = -> new T()
+
+    #coffee 坑
+    return @
+  )
+  .directive('honeyHashBind', ['honey.utils', 'hashBind', (utils, config)->
       restrict: 'A'
       replace: false
       scope: {}
       link: ($scope, element, attrs)->
-        eleType =  (element[0].type or element[0].tagName).toUpperCase()
+        if element[0].tagName.toUpperCase() isnt 'INPUT'
+          eleType = element[0].tagName.toUpperCase()
+        else
+          eleType = element[0].type.toUpperCase()
         attrName = element.attr('name')
         bindHashToElement = ->
           value = utils.getHashObj attrName
           switch eleType
             when 'TEXT' then utils.bindHashToInput element, value
-            when 'SELECT-ONE' then utils.bindHashToSelect element, value
+            when 'SELECT' then utils.bindHashToSelect element, value
             when 'RADIO' then utils.bindHashToRadio element, value
             when 'CHECKBOX' then utils.bindHashToCheckbox element, value
             when 'OPTION'
@@ -115,7 +168,7 @@ angular.module('honey.hashBind', [])
           value = element.val()
           switch eleType
             when 'TEXT' then utils.bindInputToHash attrName, value
-            when 'SELECT-ONE' then utils.bindSelectToHash attrName, value
+            when 'SELECT' then utils.bindSelectToHash attrName, value
             when 'RADIO' then utils.bindRadioToHash attrName, value, element[0].checked
             when 'CHECKBOX' then utils.bindCheckboxToHash attrName, value, element[0].checked
             when 'OPTION' then 0
@@ -130,4 +183,20 @@ angular.module('honey.hashBind', [])
         $scope.$on('honey:bindValueToHash', ->
           bindValueToHash()
         )
+
+        #event bind
+        bindEvent = ->
+          islistener = config.hasLisener eleType
+          return if islistener isnt true
+          listener = config.getLisener eleType
+          eventName = listener[0]
+          eventFun = listener[1]
+          element[0].addEventListener(
+            eventName
+          , (e)->
+            #坑。 如果通过apply 调用，则无法更新local值
+            eventFun e, ()-> $scope.$apply bindValueToHash
+          )
+
+        bindEvent()
   ])

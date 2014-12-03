@@ -1,4 +1,13 @@
 angular.module('app', ['honey.hashBind'])
+  .config(['hashBindProvider', (provider)->
+    eventMap =
+      'SELECT': false
+      'TEXT':[
+        'blur'
+        (e, cb)-> cb and cb()
+      ]
+    provider.setEventsMap eventMap
+  ])
   .controller('TestCtrl', ['$scope', '$timeout', ($scope, $timeout)->
       $scope.list = [1,2,3]
       $scope.bind = ->

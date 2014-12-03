@@ -127,7 +127,7 @@
           }
         },
         bindCheckboxToHash: function(key, value, status) {
-          var index, item, oldValue, params, _i, _len;
+          var index, item, newValue, oldValue, params, _i, _len;
           params = this.unserialize($location.hash());
           oldValue = params[key] || '';
           oldValue = oldValue === '' ? [] : oldValue.split(',');
@@ -145,20 +145,93 @@
               }
             }
           }
-          params[key] = oldValue.join(',');
+          newValue = oldValue.join(',');
+          if (newValue === '') {
+            delete params[key];
+          } else {
+            params[key] = newValue;
+          }
           return $location.hash(this.serialize(params));
         }
       };
     }
-  ]).directive('honeyHashBind', [
-    'honey.utils', function(utils) {
+  ]).provider('hashBind', function() {
+    var T, eventsMap, isListener;
+    eventsMap = {
+      'TEXT': [
+        'keyup', function(e, cb) {
+          if (e.keyCode === 13) {
+            e.preventDefault();
+            return cb && cb();
+          }
+        }
+      ],
+      'SELECT': [
+        'change', function(e, cb) {
+          return cb && cb();
+        }
+      ],
+      'RADIO': [
+        'click', function(e, cb) {
+          return cb && cb();
+        }
+      ],
+      'CHECKBOX': [
+        'click', function(e, cb) {
+          return cb && cb();
+        }
+      ]
+    };
+    isListener = {
+      'TEXT': true,
+      'SELECT': true,
+      'RADIO': true,
+      'CHECKBOX': true
+    };
+    T = (function() {
+      function T() {}
+
+      T.prototype.getLisener = function(eleType) {
+        return eventsMap[eleType];
+      };
+
+      T.prototype.hasLisener = function(eleType) {
+        return isListener[eleType];
+      };
+
+      return T;
+
+    })();
+    this.setEventsMap = function(map) {
+      var key, value, _results;
+      _results = [];
+      for (key in map) {
+        value = map[key];
+        if (typeof value === 'boolean') {
+          _results.push(isListener[key] = value);
+        } else {
+          _results.push(eventsMap[key] = value);
+        }
+      }
+      return _results;
+    };
+    this.$get = function() {
+      return new T();
+    };
+    return this;
+  }).directive('honeyHashBind', [
+    'honey.utils', 'hashBind', function(utils, config) {
       return {
         restrict: 'A',
         replace: false,
         scope: {},
         link: function($scope, element, attrs) {
-          var attrName, bindHashToElement, bindValueToHash, eleType;
-          eleType = (element[0].type || element[0].tagName).toUpperCase();
+          var attrName, bindEvent, bindHashToElement, bindValueToHash, eleType;
+          if (element[0].tagName.toUpperCase() !== 'INPUT') {
+            eleType = element[0].tagName.toUpperCase();
+          } else {
+            eleType = element[0].type.toUpperCase();
+          }
           attrName = element.attr('name');
           bindHashToElement = function() {
             var value;
@@ -166,7 +239,7 @@
             switch (eleType) {
               case 'TEXT':
                 return utils.bindHashToInput(element, value);
-              case 'SELECT-ONE':
+              case 'SELECT':
                 return utils.bindHashToSelect(element, value);
               case 'RADIO':
                 return utils.bindHashToRadio(element, value);
@@ -186,7 +259,7 @@
             switch (eleType) {
               case 'TEXT':
                 return utils.bindInputToHash(attrName, value);
-              case 'SELECT-ONE':
+              case 'SELECT':
                 return utils.bindSelectToHash(attrName, value);
               case 'RADIO':
                 return utils.bindRadioToHash(attrName, value, element[0].checked);
@@ -202,9 +275,25 @@
           $scope.$on('honey:bindHashToElement', function(event, type) {
             return bindHashToElement();
           });
-          return $scope.$on('honey:bindValueToHash', function() {
+          $scope.$on('honey:bindValueToHash', function() {
             return bindValueToHash();
           });
+          bindEvent = function() {
+            var eventFun, eventName, islistener, listener;
+            islistener = config.hasLisener(eleType);
+            if (islistener !== true) {
+              return;
+            }
+            listener = config.getLisener(eleType);
+            eventName = listener[0];
+            eventFun = listener[1];
+            return element[0].addEventListener(eventName, function(e) {
+              return eventFun(e, function() {
+                return $scope.$apply(bindValueToHash);
+              });
+            });
+          };
+          return bindEvent();
         }
       };
     }

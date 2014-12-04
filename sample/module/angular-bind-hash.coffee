@@ -136,7 +136,8 @@ angular.module('honey.hashBind', [])
           isListener[key] = value
         else
           value = [].concat(value)
-          value[1] = (e, cb)-> cb and cb() if value.length is 1
+          if value.length is 1
+            value[1] = (e, cb)-> cb and cb()
           eventsMap[key] = value
 
     @$get = -> new T()
@@ -147,13 +148,18 @@ angular.module('honey.hashBind', [])
   .directive('honeyHashBind', ['honey.utils', 'hashBind', (utils, config)->
       restrict: 'A'
       replace: false
-      scope: {}
+      scope: {
+        name: '@'
+      }
       link: ($scope, element, attrs)->
+
         if element[0].tagName.toUpperCase() isnt 'INPUT'
           eleType = element[0].tagName.toUpperCase()
         else
           eleType = element[0].type.toUpperCase()
-        attrName = element.attr('name')
+
+        attrName = $scope.name
+
         bindHashToElement = ->
           value = utils.getHashObj attrName
           switch eleType
@@ -175,8 +181,6 @@ angular.module('honey.hashBind', [])
             when 'CHECKBOX' then utils.bindCheckboxToHash attrName, value, element[0].checked
             when 'OPTION' then 0
             else utils.bindInputToHash attrName, value
-
-        bindHashToElement()
 
         $scope.$on('honey:bindHashToElement', (event, type)->
           bindHashToElement()
@@ -200,5 +204,7 @@ angular.module('honey.hashBind', [])
             eventFun e, ()-> $scope.$apply bindValueToHash
           )
 
+        bindHashToElement()
         bindEvent()
+
   ])

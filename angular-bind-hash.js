@@ -211,11 +211,11 @@
           _results.push(isListener[key] = value);
         } else {
           value = [].concat(value);
-          value[1] = function(e, cb) {
-            if (value.length === 1) {
+          if (value.length === 1) {
+            value[1] = function(e, cb) {
               return cb && cb();
-            }
-          };
+            };
+          }
           _results.push(eventsMap[key] = value);
         }
       }
@@ -230,7 +230,9 @@
       return {
         restrict: 'A',
         replace: false,
-        scope: {},
+        scope: {
+          name: '@'
+        },
         link: function($scope, element, attrs) {
           var attrName, bindEvent, bindHashToElement, bindValueToHash, eleType;
           if (element[0].tagName.toUpperCase() !== 'INPUT') {
@@ -238,7 +240,7 @@
           } else {
             eleType = element[0].type.toUpperCase();
           }
-          attrName = element.attr('name');
+          attrName = $scope.name;
           bindHashToElement = function() {
             var value;
             value = utils.getHashObj(attrName);
@@ -277,7 +279,6 @@
                 return utils.bindInputToHash(attrName, value);
             }
           };
-          bindHashToElement();
           $scope.$on('honey:bindHashToElement', function(event, type) {
             return bindHashToElement();
           });
@@ -299,6 +300,7 @@
               });
             });
           };
+          bindHashToElement();
           return bindEvent();
         }
       };

@@ -149,6 +149,52 @@ angular.module('app', ['honey.hashBind'])
 > event list support html events
 > http://www.w3.org/TR/2000/REC-DOM-Level-2-Events-20001113/events.html#Events-eventgroupings-htmlevents
 
+## Other API
+
+### honey.utils
+How to use:
+
+
+```coffeescript
+angular.module('app', ['honey.bindHash'])
+  .directive('myDirecitve', ['honey.utils', (utils)->
+      return function(){
+        restrict: "E"
+        ....
+        link: (scope, element, attrs)->
+          //use utils
+      }
+  ])
+  .controller('myCtrl', ['$scope', 'honey.utils', ($scope, utils)->
+       // use utils
+  ])
+```
+
+#### getHashObj
+
+Get the hash json object. eg.
+
+```coffeescript
+  # url = "http://...#a=1&b=2"
+  # if $locationProvider.html5Mode is false, maybe url is "http://...#/#a=1&b=2"
+  obj = utils.getHashObj()
+  # {a:"1", b: "2"}
+  #or
+  field = utils.getHashObj('a')  # field is '1'
+```
+
+#### setHash
+
+set json object to hash
+
+```coffeescript
+url = "http://...#a=1&b=2"
+params = a: 4, c: 3
+utils.setHash params
+# url is "http://...#a=4&b=2&c=3"
+
+```
+
 ## Demo
 
   the details see the directory ```sample```

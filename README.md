@@ -129,6 +129,21 @@ angular.module('app', ['honey.hashBind'])
     provider.setEventsMap(eventMap)
   }])
 ```
+
+Maybe  you can omit the event function:
+
+```
+angular.module('app', ['honey.hashBind'])
+  .config(['hashBindProvider', function(provider){
+    eventMap = {
+      'TEXT': [ 'blur',function(e, cb){ cb and cb()}]
+     // ===  'TEXT': [ 'blur']
+     // ===  'TEXT': 'blur'
+    }
+    provider.setEventsMap(eventMap)
+  }])
+```
+
 > Note:
 > element type include TEXT, SELECT, CHECKBOX, RADIO
 > event list support html events

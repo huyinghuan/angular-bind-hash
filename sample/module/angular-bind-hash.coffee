@@ -135,6 +135,8 @@ angular.module('honey.hashBind', [])
         if typeof value is 'boolean'
           isListener[key] = value
         else
+          value = [].concat(value)
+          value[1] = (e, cb)-> cb and cb() if value.length is 1
           eventsMap[key] = value
 
     @$get = -> new T()

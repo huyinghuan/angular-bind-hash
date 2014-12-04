@@ -210,6 +210,12 @@
         if (typeof value === 'boolean') {
           _results.push(isListener[key] = value);
         } else {
+          value = [].concat(value);
+          value[1] = function(e, cb) {
+            if (value.length === 1) {
+              return cb && cb();
+            }
+          };
           _results.push(eventsMap[key] = value);
         }
       }

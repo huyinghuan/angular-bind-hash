@@ -232,12 +232,13 @@
         replace: false,
         scope: {
           name: '@',
-          honeyHashBind: '@'
+          honeyHashBind: '@',
+          honeyHashValue: '='
         },
         link: function($scope, element, attrs) {
           var attrName, bindEvent, bindHashToElement, bindValueToHash, defaultValue, eleType, field, obj;
           attrName = $scope.name;
-          defaultValue = $scope.honeyHashBind;
+          defaultValue = $scope.honeyHashBind || $scope.honeyHashValue;
           if (defaultValue != null) {
             field = utils.getHashObj(attrName);
             if (!field) {

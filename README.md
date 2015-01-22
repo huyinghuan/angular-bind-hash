@@ -220,6 +220,16 @@ v0.0.3 增加默认值绑定
 例如： ```.../##email=a```, 这个时候，页面刷新完成，上述控件的值是a. 也就是该控件的值存在于url时。
 当值不存在时，如```.../##name=b```, 这个时候，页面刷新完成，上述的控件值为2不，并且url变成```../##name=b&&email=2```
 
+注意该方式仅用于常量。 如果绑定上下文请用 ```honey-hash-value```
+如： 上级controller有个```$scope.year = 2014``` 需要绑定，那么应该如下使用
+```
+<input type="text" name="email" honey-hash-value="year"/>
+```
+
+原因是在源码定义honey-hash-value组件时，其scope定义如下:
+```
+scope: {name: '@', honeyHashBind: '@',honeyHashValue: '='}
+```
 
 ## History
 
@@ -231,3 +241,6 @@ v0.0.2
   
 v0.0.3
   增加默认值设置
+
+v0.0.4
+  完善上一个版本的功能

@@ -142,12 +142,13 @@ angular.module('honey.hashBind', [])
       scope: {
         name: '@'
         honeyHashBind: '@'
+        honeyHashValue: '='
       }
       link: ($scope, element, attrs)->
         attrName = $scope.name
 
         #检查是否存在默认值
-        defaultValue = $scope.honeyHashBind
+        defaultValue = $scope.honeyHashBind or $scope.honeyHashValue
         if defaultValue?
           #检查hash中是否一存在该数据字段
           field = utils.getHashObj(attrName)

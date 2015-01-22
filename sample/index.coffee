@@ -7,6 +7,7 @@ angular.module('app', ['honey.hashBind'])
   .controller('TestCtrl', ['$scope', '$timeout', ($scope, $timeout)->
       $scope.list = [1,2,3]
       $scope.birth = "birth"
+      $scope.year = "bind20314"
       $scope.bind = ->
         $scope.$broadcast('honey:bindValueToHash')
 

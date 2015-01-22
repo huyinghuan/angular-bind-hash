@@ -206,6 +206,21 @@ utils.setHash params
 ## LINCENSE
   MIT
 
+## New
+
+v0.0.3 增加默认值绑定
+
+
+如下，给表单控件增加默认值。 当页面刷新时， url不存在该控件值的时候，自动绑定到hash。如果存在该值，这默认值忽略。
+
+```
+<input type="text" name="email" honey-hash-bind="2"/>
+```
+
+例如： ```.../##email=a```, 这个时候，页面刷新完成，上述控件的值是a. 也就是该控件的值存在于url时。
+当值不存在时，如```.../##name=b```, 这个时候，页面刷新完成，上述的控件值为2不，并且url变成```../##name=b&&email=2```
+
+
 ## History
 
 v0.0.1
@@ -213,3 +228,6 @@ v0.0.1
 
 v0.0.2
   support event config and update README
+  
+v0.0.3
+  增加默认值设置

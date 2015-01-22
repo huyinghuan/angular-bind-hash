@@ -102,18 +102,9 @@ angular.module('honey.hashBind', [])
             e.preventDefault()
             cb and cb()
       ]
-      'SELECT': [
-        'change'
-        (e, cb)-> cb and cb()
-      ]
-      'RADIO': [
-        'click'
-        (e, cb)-> cb and cb()
-      ]
-      'CHECKBOX': [
-        'click'
-        (e, cb)-> cb and cb()
-      ]
+      'SELECT': ['change', (e, cb)-> cb and cb()]
+      'RADIO': ['click', (e, cb)-> cb and cb()]
+      'CHECKBOX': ['click', (e, cb)-> cb and cb()]
 
     isListener =
       'TEXT': true
@@ -150,15 +141,28 @@ angular.module('honey.hashBind', [])
       replace: false
       scope: {
         name: '@'
+        honeyHashBind: '@'
       }
       link: ($scope, element, attrs)->
+        attrName = $scope.name
+
+        #检查是否存在默认值
+        defaultValue = $scope.honeyHashBind
+        if defaultValue?
+          #检查hash中是否一存在该数据字段
+          field = utils.getHashObj(attrName)
+          #如果不存在该字段
+          if not field
+            obj = {}
+            obj[attrName] = defaultValue
+            utils.setHash(obj)
 
         if element[0].tagName.toUpperCase() isnt 'INPUT'
           eleType = element[0].tagName.toUpperCase()
         else
           eleType = element[0].type.toUpperCase()
 
-        attrName = $scope.name
+
 
         bindHashToElement = ->
           value = utils.getHashObj attrName

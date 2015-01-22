@@ -231,16 +231,26 @@
         restrict: 'A',
         replace: false,
         scope: {
-          name: '@'
+          name: '@',
+          honeyHashBind: '@'
         },
         link: function($scope, element, attrs) {
-          var attrName, bindEvent, bindHashToElement, bindValueToHash, eleType;
+          var attrName, bindEvent, bindHashToElement, bindValueToHash, defaultValue, eleType, field, obj;
+          attrName = $scope.name;
+          defaultValue = $scope.honeyHashBind;
+          if (defaultValue != null) {
+            field = utils.getHashObj(attrName);
+            if (!field) {
+              obj = {};
+              obj[attrName] = defaultValue;
+              utils.setHash(obj);
+            }
+          }
           if (element[0].tagName.toUpperCase() !== 'INPUT') {
             eleType = element[0].tagName.toUpperCase();
           } else {
             eleType = element[0].type.toUpperCase();
           }
-          attrName = $scope.name;
           bindHashToElement = function() {
             var value;
             value = utils.getHashObj(attrName);

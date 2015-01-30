@@ -19,5 +19,14 @@ angular.module('app', ['honey.hashBind'])
       , 500
       )
     ])
+  .directive('test', ->
+    restrict: 'E'
+    replace: true
+    scope: {}
+    templateUrl: "directive-test.html"
+    link: ($scope, element, attribute)->
+      $scope.year = 2016
+
+  )
 
 angular.bootstrap(document, ['app'])

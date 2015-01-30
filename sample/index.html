@@ -18,13 +18,20 @@
       padding: 5px 10px;
     }
 
-
+    .navigation{
+      float: left;
+    }
   </style>
 </head>
 
 <body ng-controller="TestCtrl">
 <div id="content">
-  <h1>Example:</h1>
+  <div class=".navigation">
+    <a href="index.html">Base Example</a>
+    <a href="test-bind-default.html">use in directive</a>
+  </div>
+  <h1> Base Example:</h1>
+  <h3>please press F12 on keyboard see the source code</h3>
   <div>
     <label>username</label>
     <input type="text" name="username" honey-hash-bind/>
@@ -32,7 +39,7 @@
 
   <div>
     <lable>email</lable>
-    <input type="text" name="email" honey-hash-bind honey-hash-value="year"/>
+    <input type="text" name="email" honey-hash-bind/>
   </div>
 
   <div>

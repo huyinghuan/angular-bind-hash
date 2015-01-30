@@ -136,7 +136,7 @@ angular.module('honey.hashBind', [])
     #coffee 坑
     return @
   )
-  .directive('honeyHashBind', ['honey.utils', 'hashBind', (utils, config)->
+  .directive('honeyHashBind', ['$timeout', 'honey.utils', 'hashBind', ($timeout, utils, config)->
       restrict: 'A'
       replace: false
       scope: {
@@ -146,22 +146,23 @@ angular.module('honey.hashBind', [])
       }
       link: ($scope, element, attrs)->
         attrName = $scope.name
+        eleType = ""
+        checkDefaultValue = ->
+          #检查是否存在默认值
+          defaultValue = $scope.honeyHashBind or $scope.honeyHashValue
+          if defaultValue?
+            #检查hash中是否一存在该数据字段
+            field = utils.getHashObj(attrName)
+            #如果不存在该字段
+            if not field
+              obj = {}
+              obj[attrName] = defaultValue
+              utils.setHash(obj)
 
-        #检查是否存在默认值
-        defaultValue = $scope.honeyHashBind or $scope.honeyHashValue
-        if defaultValue?
-          #检查hash中是否一存在该数据字段
-          field = utils.getHashObj(attrName)
-          #如果不存在该字段
-          if not field
-            obj = {}
-            obj[attrName] = defaultValue
-            utils.setHash(obj)
-
-        if element[0].tagName.toUpperCase() isnt 'INPUT'
-          eleType = element[0].tagName.toUpperCase()
-        else
-          eleType = element[0].type.toUpperCase()
+          if element[0].tagName.toUpperCase() isnt 'INPUT'
+            eleType = element[0].tagName.toUpperCase()
+          else
+            eleType = element[0].type.toUpperCase()
 
 
 
@@ -208,8 +209,11 @@ angular.module('honey.hashBind', [])
             #坑。 如果通过apply 调用，则无法更新local值
             eventFun e, ()-> $scope.$apply bindValueToHash
           )
+        $timeout(()->
+          checkDefaultValue()
+          bindHashToElement()
+          bindEvent()
+        )
 
-        bindHashToElement()
-        bindEvent()
 
   ])

@@ -7,7 +7,7 @@
           queue = [];
           for (key in obj) {
             value = obj[key];
-            queue.push("" + key + "=" + value);
+            queue.push(key + "=" + value);
           }
           return queue.join('&');
         },
@@ -226,7 +226,7 @@
     };
     return this;
   }).directive('honeyHashBind', [
-    'honey.utils', 'hashBind', function(utils, config) {
+    '$timeout', 'honey.utils', 'hashBind', function($timeout, utils, config) {
       return {
         restrict: 'A',
         replace: false,
@@ -236,22 +236,26 @@
           honeyHashValue: '='
         },
         link: function($scope, element, attrs) {
-          var attrName, bindEvent, bindHashToElement, bindValueToHash, defaultValue, eleType, field, obj;
+          var attrName, bindEvent, bindHashToElement, bindValueToHash, checkDefaultValue, eleType;
           attrName = $scope.name;
-          defaultValue = $scope.honeyHashBind || $scope.honeyHashValue;
-          if (defaultValue != null) {
-            field = utils.getHashObj(attrName);
-            if (!field) {
-              obj = {};
-              obj[attrName] = defaultValue;
-              utils.setHash(obj);
+          eleType = "";
+          checkDefaultValue = function() {
+            var defaultValue, field, obj;
+            defaultValue = $scope.honeyHashBind || $scope.honeyHashValue;
+            if (defaultValue != null) {
+              field = utils.getHashObj(attrName);
+              if (!field) {
+                obj = {};
+                obj[attrName] = defaultValue;
+                utils.setHash(obj);
+              }
             }
-          }
-          if (element[0].tagName.toUpperCase() !== 'INPUT') {
-            eleType = element[0].tagName.toUpperCase();
-          } else {
-            eleType = element[0].type.toUpperCase();
-          }
+            if (element[0].tagName.toUpperCase() !== 'INPUT') {
+              return eleType = element[0].tagName.toUpperCase();
+            } else {
+              return eleType = element[0].type.toUpperCase();
+            }
+          };
           bindHashToElement = function() {
             var value;
             value = utils.getHashObj(attrName);
@@ -311,8 +315,11 @@
               });
             });
           };
-          bindHashToElement();
-          return bindEvent();
+          return $timeout(function() {
+            checkDefaultValue();
+            bindHashToElement();
+            return bindEvent();
+          });
         }
       };
     }

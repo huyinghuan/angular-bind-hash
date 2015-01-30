@@ -194,7 +194,7 @@ utils.setHash params
 
   the details see the directory ```sample```
   or see it online:
-    https://huyinghuan.github.io/angular-bind-hash/demo.html
+    https://huyinghuan.github.io/angular-bind-hash/gh-pages/index.html
 ## Test
 
   Test only on chrome and firefox. other browser is unknown.

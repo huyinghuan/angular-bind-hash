@@ -1,0 +1,76 @@
+<html>
+<head>
+  <style>
+    #content{
+      width: 980px;
+      margin: 30px auto 0 auto;
+    }
+    #content > div{
+      margin-bottom: 30px;
+      border: solid #f3f3f3 1px;
+      padding: 10px 10px;
+    }
+
+    button{
+      margin: 10px 10px;
+      -moz-border-radius: 5px;
+      -webkit-border-radius: 5px;
+      padding: 5px 10px;
+    }
+    .navigation{
+      float: left;
+    }
+  </style>
+</head>
+
+<body>
+<div id="content">
+  <div class=".navigation">
+    <a href="index.html">Base Example</a>
+    <a href="test-bind-default.html">use in directive</a>
+  </div>
+  <h1>Use in directive Example:</h1>
+  <h2>bind parent scope value:</h2>
+  <label>'test' directive  code:</label>
+  <div>
+  <textarea rows=19 cols=40 readonly>
+      app.directive('test', ->
+        restrict: 'E'
+        replace: true
+        scope: {}
+        templateUrl: "directive-test.html"
+        link: ($scope, element, attribute)->
+          $scope.year = 2016
+      )
+
+      directive-test.html:
+
+      <div>
+        <lable>directive </lable>
+        <input type="text" name="year" honey-hash-bind honey-hash-value="year"/>
+      </div>
+
+      use:
+     <test></test>
+  </textarea>
+  </div>
+  <label>'test' directive Demo:</label>
+  <test></test>
+
+  <h2>bind constant value:</h2>
+  <div>
+    <textarea rows=3 cols=40 readonly>
+      use:
+       <input type="text" name="month" honey-hash-bind="11"/>
+    </textarea>
+  </div>
+  <label>demo:</label>
+  <div>
+    month: <input type="text" name="month" honey-hash-bind="11"/>
+  </div>
+</div>
+<script src="lib/angular.min.js"></script>
+<script src="module/angular-bind-hash.js"></script>
+<script src="index.js"></script>
+</body>
+</html>

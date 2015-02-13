@@ -228,6 +228,8 @@ scope: {name: '@', honeyHashBind: '@',honeyHashValue: '='}
 ```
 
 ## History
+v0.0.7
+  support requirejs
 
 v0.0.1
   init plugin and test.

@@ -187,7 +187,14 @@ url = "http://...#a=1&b=2"
 params = a: 4, c: 3
 utils.setHash params
 # url is "http://...#a=4&b=2&c=3"
+```
 
+#### setHashKey
+
+```coffeescript
+url = "http://...#a=1&b=2"
+utils.setHashKey "a", 5
+# url is "http://...#a=5&b=2"
 ```
 
 ## Demo
@@ -228,6 +235,9 @@ scope: {name: '@', honeyHashBind: '@',honeyHashValue: '='}
 ```
 
 ## History
+v0.0.8
+ add a function ```setHashKey````
+
 v0.0.7
   support requirejs
 

@@ -57,6 +57,12 @@
             params = angular.extend(params, obj);
             return $location.hash(this.serialize(params));
           },
+          setHashKey: function(name, value) {
+            var obj;
+            obj = {};
+            obj[name] = value;
+            return this.setHash(obj);
+          },
           getHashObj: function(filed) {
             var obj;
             obj = this.unserialize($location.hash());

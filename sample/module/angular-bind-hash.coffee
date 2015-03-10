@@ -35,6 +35,11 @@
         params = angular.extend params, obj
         $location.hash @serialize params
 
+      setHashKey: (name, value)->
+        obj = {}
+        obj[name] = value
+        @setHash(obj)
+
       getHashObj: (filed)->
         obj = @unserialize $location.hash()
         return obj[filed] if filed
